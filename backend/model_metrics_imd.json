@@ -1,0 +1,22 @@
+{
+  "accuracy": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "auc_roc": 1.0,
+  "training_samples": 9,
+  "test_samples": 3,
+  "cloudburst_events": 5,
+  "data_years": [
+    2023,
+    2024,
+    2025
+  ],
+  "districts": [
+    "uttarkashi",
+    "chamoli",
+    "rudraprayag",
+    "bageshwar",
+    "pithoragarh"
+  ]
+}

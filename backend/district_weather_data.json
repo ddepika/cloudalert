@@ -1,0 +1,182 @@
+[
+  {
+    "state": "Uttarakhand",
+    "district": "uttarkashi",
+    "temperature": 31.03,
+    "humidity": 15,
+    "pressure": 1008,
+    "wind_speed": 3.01,
+    "cloud_cover": 46
+  },
+  {
+    "state": "Uttarakhand",
+    "district": "chamoli",
+    "temperature": 27.76,
+    "humidity": 27,
+    "pressure": 1012,
+    "wind_speed": 5.06,
+    "cloud_cover": 67
+  },
+  {
+    "state": "Uttarakhand",
+    "district": "rudraprayag",
+    "temperature": 33.98,
+    "humidity": 13,
+    "pressure": 1007,
+    "wind_speed": 2.92,
+    "cloud_cover": 11
+  },
+  {
+    "state": "Uttarakhand",
+    "district": "bageshwar",
+    "temperature": 35.45,
+    "humidity": 10,
+    "pressure": 1006,
+    "wind_speed": 3.36,
+    "cloud_cover": 56
+  },
+  {
+    "state": "Uttarakhand",
+    "district": "pithoragarh",
+    "temperature": 31.79,
+    "humidity": 13,
+    "pressure": 1006,
+    "wind_speed": 3.65,
+    "cloud_cover": 35
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "mandi",
+    "temperature": 32.27,
+    "humidity": 18,
+    "pressure": 1009,
+    "wind_speed": 4.4,
+    "cloud_cover": 100
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "shimla",
+    "temperature": 26.74,
+    "humidity": 35,
+    "pressure": 1010,
+    "wind_speed": 4.12,
+    "cloud_cover": 40
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "chamba",
+    "temperature": 33.43,
+    "humidity": 23,
+    "pressure": 1011,
+    "wind_speed": 3.84,
+    "cloud_cover": 89
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "kullu",
+    "temperature": 22.32,
+    "humidity": 26,
+    "pressure": 1013,
+    "wind_speed": 1.86,
+    "cloud_cover": 100
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "sirmaur",
+    "temperature": 33.09,
+    "humidity": 14,
+    "pressure": 1007,
+    "wind_speed": 5.2,
+    "cloud_cover": 35
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "kangra",
+    "temperature": 33.66,
+    "humidity": 22,
+    "pressure": 1008,
+    "wind_speed": 3.95,
+    "cloud_cover": 100
+  },
+  {
+    "state": "Himachal Pradesh",
+    "district": "kinnaur",
+    "temperature": 3.9,
+    "humidity": 56,
+    "pressure": 1021,
+    "wind_speed": 3.46,
+    "cloud_cover": 49
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "anantnag",
+    "temperature": 24.32,
+    "humidity": 40,
+    "pressure": 1013,
+    "wind_speed": 1.71,
+    "cloud_cover": 49
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "kulgam",
+    "temperature": 21.25,
+    "humidity": 52,
+    "pressure": 1016,
+    "wind_speed": 0.99,
+    "cloud_cover": 88
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "ganderbal",
+    "temperature": 19.29,
+    "humidity": 49,
+    "pressure": 1016,
+    "wind_speed": 3.4,
+    "cloud_cover": 57
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "kishtwar",
+    "temperature": 27.89,
+    "humidity": 24,
+    "pressure": 1012,
+    "wind_speed": 3.35,
+    "cloud_cover": 62
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "doda",
+    "temperature": 29.22,
+    "humidity": 30,
+    "pressure": 1013,
+    "wind_speed": 2.45,
+    "cloud_cover": 98
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "ramban",
+    "temperature": 30.95,
+    "humidity": 29,
+    "pressure": 1012,
+    "wind_speed": 2.41,
+    "cloud_cover": 85
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "reasi",
+    "temperature": 38.34,
+    "humidity": 16,
+    "pressure": 1008,
+    "wind_speed": 3.62,
+    "cloud_cover": 50
+  },
+  {
+    "state": "Jammu & Kashmir",
+    "district": "udhampur",
+    "temperature": 35.43,
+    "humidity": 19,
+    "pressure": 1009,
+    "wind_speed": 4.16,
+    "cloud_cover": 22
+  }
+]

@@ -1,0 +1,26 @@
+﻿.prediction-container {
+  padding: 20px;
+}
+
+.form-paper {
+  border-radius: 12px;
+}
+
+.results-paper {
+  border-radius: 12px;
+}
+
+.predict-btn {
+  background: linear-gradient(45deg, #1a237e 30%, #0d47a1 90%);
+  height: 48px;
+}
+
+.result-alert {
+  border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+  .prediction-container {
+    padding: 10px;
+  }
+}

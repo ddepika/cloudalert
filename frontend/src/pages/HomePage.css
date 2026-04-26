@@ -1,0 +1,171 @@
+﻿body {
+  background-color: #cea969;
+  color: #333;
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.hero-icon {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  color: #012060;
+}
+
+.hero-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: #012060;
+  margin-bottom: 12px;
+}
+
+.hero-subtitle {
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  color: #666;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Controls Section */
+.controls-section {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+.control-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #012060;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.control-select .MuiOutlinedInput-root {
+  font-family: 'Lato', sans-serif;
+  background-color: white;
+  border-radius: 8px;
+}
+
+/* Risk Section */
+.risk-section {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.risk-badge {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  color: white;
+}
+
+/* Metrics Section */
+.metrics-section {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.metric-card {
+  background: #E1EBF7;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.metric-value {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #012060;
+  margin-bottom: 8px;
+}
+
+.metric-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Map Section */
+.map-section {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #012060;
+  margin-bottom: 16px;
+}
+
+.live-map {
+  height: 400px;
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 32px;
+  }
+  
+  .hero-subtitle {
+    font-size: 14px;
+  }
+  
+  .controls-section {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .metrics-section {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .metric-value {
+    font-size: 20px;
+  }
+  
+  .live-map {
+    height: 300px;
+  }
+}

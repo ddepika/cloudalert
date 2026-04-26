@@ -1,0 +1,73 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Frontend
+frontend/node_modules/
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
+frontend/dist/
+frontend/build/
+frontend/.vite/
+
+# Backend
+backend/__pycache__/
+backend/venv/
+backend/.env
+backend/*.pyc
+backend/cloudburst.db
+backend/data/era5/*.nc
+backend/data/imd/*.nc
+backend/data/raw/
+backend/*.log
+
+# ML Models (large files)
+*.h5
+*.pkl
+*.keras
+best_cloudburst_model.h5
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# OS
+Thumbs.db
+desktop.ini
+
+# Secrets
+*.key
+*.pem
+*.crt
