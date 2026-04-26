@@ -1,4 +1,5 @@
-﻿# CloudAlert - Cloudburst Prediction System
+```markdown
+# CloudAlert - Cloudburst Prediction System
 
 A real-time cloudburst prediction system for Uttarakhand, Himachal Pradesh, and Jammu & Kashmir using Machine Learning.
 
@@ -43,6 +44,7 @@ Anantnag, Kulgam, Ganderbal, Kishtwar, Doda, Ramban, Reasi, Udhampur
 - OpenWeatherMap API
 - IMD Gridded Rainfall Data
 - MOSDAC/ISRO NETRA
+- ERA5 Reanalysis (planned)
 
 ## Prerequisites
 
@@ -55,27 +57,36 @@ Anantnag, Kulgam, Ganderbal, Kishtwar, Doda, Ramban, Reasi, Udhampur
 
 ### Backend Setup
 
-`ash
+```bash
 cd backend
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 cp .env.example .env
 python run.py
-Frontend Setup
-bash
+```
+
+### Frontend Setup
+
+```bash
 cd frontend
 npm install
 npm run dev
-Model Performance
-Metric    Value
-Accuracy    94.8%
-Precision    93.3%
-Recall    87.5%
-F1-Score    90.3%
-AUC-ROC    98.2%
-Project Structure
-text
+```
+
+## Model Performance
+
+| Metric | Value |
+|--------|-------|
+| Accuracy | 94.8% |
+| Precision | 93.3% |
+| Recall | 87.5% |
+| F1-Score | 90.3% |
+| AUC-ROC | 98.2% |
+
+## Project Structure
+
+```
 CloudBurst/
 ├── backend/
 │   ├── app/
@@ -92,16 +103,28 @@ CloudBurst/
 │   │   └── context/      # Auth context
 │   └── package.json
 └── README.md
-Environment Variables
-Create .env file in backend directory:
+```
 
-env
+## Environment Variables
+
+Create `.env` file in backend directory:
+
+```env
 OPENWEATHER_API_KEY=your_api_key
 MAIL_USERNAME=your_email@gmail.com
 MAIL_PASSWORD=your_app_password
 DATABASE_URL=sqlite:///./cloudburst.db
-Author
-Deepika Rawat - B.Tech CSE Final Year Project
+```
 
-License
+## License
+
 MIT License
+
+## Author
+
+**Deepika Rawat** - B.Tech CSE Final Year Project
+
+---
+
+*This project is for academic purposes. Always follow official disaster management guidelines.*
+```
