@@ -106,7 +106,7 @@ async def send_alert_email(email: EmailStr, name: str, district: str, risk_level
             </div>
             <div class="footer">
                 <p>This is an automated alert from CloudAlert System.</p>
-                <p>For more information, visit CloudAlert Dashboard.</p>
+                
             </div>
         </div>
     </body>

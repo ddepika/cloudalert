@@ -1,10 +1,8 @@
 ﻿from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from datetime import datetime
-import numpy as np
-import os
-import tensorflow as tf
 from typing import Optional
+from app.services.ml_service import ml_service
 
 router = APIRouter()
 
@@ -29,17 +27,15 @@ class PredictionResponse(BaseModel):
 
 @router.post("/predict", response_model=PredictionResponse)
 async def predict_cloudburst(request: PredictionRequest):
-    # Simple rule-based calculation
-    # High humidity + low pressure + low wind speed = cloudburst risk
+    features = {
+        'temperature': request.temperature,
+        'humidity': request.humidity,
+        'pressure': request.pressure,
+        'wind_speed': request.wind_speed,
+        'cloud_cover': request.cloud_cover
+    }
     
-    humidity_score = request.humidity / 100
-    pressure_score = max(0, (1013 - request.pressure) / 30)
-    wind_score = max(0, (5 - request.wind_speed) / 10)
-    cloud_score = request.cloud_cover / 100
-    
-    # Weighted combination
-    probability = (humidity_score * 0.4) + (pressure_score * 0.3) + (wind_score * 0.2) + (cloud_score * 0.1)
-    probability = min(max(probability, 0), 1)  # Clamp between 0 and 1
+    probability = ml_service.predict(features)
     
     if probability > 0.7:
         risk_level = "HIGH"
