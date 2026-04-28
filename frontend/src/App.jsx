@@ -1,8 +1,7 @@
-﻿// frontend/src/App.jsx
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
-import AccountCircleIcon from '@mui/icons-material/AccountCircleOutlined';
+﻿import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import { Box, Container } from '@mui/material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import HomePage from './pages/HomePage';
 import PredictionPage from './pages/PredictionPage';
@@ -28,10 +27,12 @@ const NavBar = () => {
   return (
     <Box className="navbar">
       <div className="nav-container">
-        <div className="logo">
-          <img src={logo} alt="CloudAlert Logo" className="logo-image" style={{ width: '32px' }}/>
-          <span className="logo-text">CloudAlert</span>
-        </div>
+        <Link to="/" className="logo-link">
+          <div className="logo">
+            <img src={logo} alt="CloudAlert Logo" className="logo-image" style={{ width: '50px' }} />
+            <span className="logo-text">CloudAlert</span>
+          </div>
+        </Link>
         <div className="nav-links">
           {navItems.map((item) => (
             <Link
@@ -60,6 +61,29 @@ const NavBar = () => {
 };
 
 function AppRoutes() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  useEffect(() => {
+    // Check for token in URL (from email verification)
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    const name = params.get('name');
+    const email = params.get('email');
+    
+    if (token && name && email) {
+      // Auto-login the user
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userName', name);
+      localStorage.setItem('authToken', token);
+      login(email, name);
+      
+      // Clean URL and redirect to home
+      navigate('/', { replace: true });
+    }
+  }, [location, navigate, login]);
+
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />

@@ -1,5 +1,4 @@
-﻿// frontend/src/pages/ConnectPage.jsx
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const API_BASE = 'http://localhost:8000';
@@ -7,17 +6,42 @@ const API_BASE = 'http://localhost:8000';
 const ConnectPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [district, setDistrict] = useState('uttarkashi');
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [states, setStates] = useState([]);
   const [districts, setDistricts] = useState([]);
+  const [filteredDistricts, setFilteredDistricts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [weatherData, setWeatherData] = useState(null);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   useEffect(() => {
+    const userEmail = localStorage.getItem('userEmail');
+    const userName = localStorage.getItem('userName');
+    
+    if (userEmail) {
+      setLoggedInUser({ email: userEmail, name: userName });
+      // Do not auto-fill email - let user enter any email
+    }
+    
+    fetchStates();
     fetchDistricts();
     fetchWeather();
   }, []);
+
+  const fetchStates = async () => {
+    try {
+      const response = await axios.get(API_BASE + '/api/weather/states');
+      setStates(response.data.states || []);
+      if (response.data.states && response.data.states.length > 0) {
+        setSelectedState(response.data.states[0].name);
+      }
+    } catch (err) {
+      console.error('Failed to fetch states:', err);
+    }
+  };
 
   const fetchDistricts = async () => {
     try {
@@ -28,13 +52,30 @@ const ConnectPage = () => {
     }
   };
 
-  const fetchWeather = async () => {
+  const fetchWeather = async (district = 'uttarkashi') => {
     try {
-      const response = await axios.get(API_BASE + '/api/weather/live/uttarkashi');
+      const response = await axios.get(API_BASE + '/api/weather/live/' + district);
       setWeatherData(response.data);
     } catch (err) {
       console.error('Failed to fetch weather:', err);
     }
+  };
+
+  useEffect(() => {
+    if (selectedState && districts.length > 0) {
+      const filtered = districts.filter(d => d.state === selectedState);
+      setFilteredDistricts(filtered);
+      if (filtered.length > 0) {
+        setSelectedDistrict(filtered[0].value);
+        fetchWeather(filtered[0].value);
+      }
+    }
+  }, [selectedState, districts]);
+
+  const handleDistrictChange = (e) => {
+    const district = e.target.value;
+    setSelectedDistrict(district);
+    fetchWeather(district);
   };
 
   const getRisk = () => {
@@ -58,31 +99,16 @@ const ConnectPage = () => {
     setError('');
 
     try {
-      // Get current weather for selected district
-      const weatherResponse = await axios.get(API_BASE + '/api/weather/live/' + district);
-      const currentWeather = weatherResponse.data;
-      
-      // Calculate risk
-      let riskLevel = 'Low';
-      let probability = 20;
-      if (currentWeather.humidity > 90 && currentWeather.pressure < 1005) {
-        riskLevel = 'High';
-        probability = 85;
-      } else if (currentWeather.humidity > 70 && currentWeather.pressure < 1010) {
-        riskLevel = 'Medium';
-        probability = 55;
-      }
-
-      // Send alert email
-      await axios.post(API_BASE + '/api/auth/send-alert', {
+      const response = await axios.post(API_BASE + '/api/auth/send-alert', {
         email: email,
         name: name,
-        district: district,
-        risk_level: riskLevel,
-        probability: probability
+        district: selectedDistrict,
+        risk_level: getRisk(),
+        probability: getRiskProbability()
       });
-
-      setMessage(`Weather report sent successfully to ${email}!`);
+      
+      setMessage(`Weather report sent successfully to ${email}`);
+      // Clear form after sending
       setName('');
       setEmail('');
     } catch (err) {
@@ -92,16 +118,19 @@ const ConnectPage = () => {
     setLoading(false);
   };
 
-  const filteredDistricts = districts.filter(d => d.state === 'Uttarakhand');
-
   return (
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
       <div style={{ padding: 32, backgroundColor: 'white', borderRadius: 16, boxShadow: '0 2px 10px rgba(0,0,0,0.1)' }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
-          <div style={{ fontSize: 48, marginBottom: 8 }}>📧</div>
           <h2 style={{ color: '#012060', marginBottom: 8 }}>Get Weather Report</h2>
           <p style={{ color: '#666' }}>Receive cloudburst alerts and weather updates via email</p>
         </div>
+
+        {loggedInUser && (
+          <div style={{ backgroundColor: '#E1EBF7', padding: 12, borderRadius: 8, marginBottom: 16, textAlign: 'center' }}>
+            Logged in as: <strong>{loggedInUser.email}</strong> - You can send reports to any email address
+          </div>
+        )}
 
         {message && (
           <div style={{ backgroundColor: '#e8f5e9', color: '#2e7d32', padding: 12, borderRadius: 8, marginBottom: 16 }}>
@@ -138,30 +167,46 @@ const ConnectPage = () => {
               placeholder="you@example.com"
               style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ccc', fontSize: 16 }}
             />
+            <p style={{ fontSize: 12, color: '#666', marginTop: 4 }}>
+              Enter any email address to receive the weather report
+            </p>
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', color: '#333' }}>District to Monitor</label>
+            <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', color: '#333' }}>Select State</label>
             <select
-              value={district}
-              onChange={(e) => setDistrict(e.target.value)}
+              value={selectedState}
+              onChange={(e) => setSelectedState(e.target.value)}
               style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ccc', fontSize: 16, backgroundColor: 'white' }}
             >
-              {filteredDistricts.map(d => (
-                <option key={d.value} value={d.value}>{d.name}</option>
+              {states.map(state => (
+                <option key={state.name} value={state.name}>{state.name}</option>
               ))}
             </select>
           </div>
 
-          {/* Current Weather Preview */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', color: '#333' }}>Select District</label>
+            <select
+              value={selectedDistrict}
+              onChange={handleDistrictChange}
+              style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ccc', fontSize: 16, backgroundColor: 'white' }}
+            >
+              {filteredDistricts.map(district => (
+                <option key={district.value} value={district.value}>{district.name}</option>
+              ))}
+            </select>
+          </div>
+
           {weatherData && (
             <div style={{ marginBottom: 20, padding: 16, backgroundColor: '#E1EBF7', borderRadius: 12 }}>
-              <h4 style={{ marginBottom: 12, color: '#012060' }}>Current Conditions for {district}</h4>
+              <h4 style={{ marginBottom: 12, color: '#012060' }}>Current Conditions for {selectedDistrict}</h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 8 }}>
                 <div><strong>Temperature:</strong> {weatherData.temperature}°C</div>
                 <div><strong>Humidity:</strong> {weatherData.humidity}%</div>
                 <div><strong>Pressure:</strong> {weatherData.pressure} hPa</div>
                 <div><strong>Wind Speed:</strong> {weatherData.wind_speed} m/s</div>
+                <div><strong>Cloud Cover:</strong> {weatherData.cloud_cover}%</div>
               </div>
               <div style={{ marginTop: 12, padding: 8, backgroundColor: 'white', borderRadius: 8, textAlign: 'center' }}>
                 <strong style={{ color: '#012060' }}>Current Risk: {getRisk()} ({getRiskProbability()}%)</strong>
@@ -179,7 +224,7 @@ const ConnectPage = () => {
         </form>
         
         <p style={{ textAlign: 'center', marginTop: 24, fontSize: 12, color: '#999' }}>
-          You will receive cloudburst alerts and weather updates for your selected district.
+          You can send reports to any email address, not just your registered email.
         </p>
       </div>
     </div>

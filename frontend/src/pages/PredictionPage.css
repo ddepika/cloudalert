@@ -1,26 +1,284 @@
-﻿.prediction-container {
-  padding: 20px;
+﻿/* frontend/src/pages/PredictionPage.css */
+
+.prediction-wrapper {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 40px 20px;
 }
 
-.form-paper {
-  border-radius: 12px;
+.prediction-container {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  background: transparent;
 }
 
-.results-paper {
-  border-radius: 12px;
+/* Header Section */
+.prediction-header {
+  text-align: center;
+  margin-bottom: 40px;
 }
 
-.predict-btn {
-  background: linear-gradient(45deg, #1a237e 30%, #0d47a1 90%);
-  height: 48px;
+.prediction-header h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #012060;
+  margin-bottom: 8px;
 }
 
-.result-alert {
+.prediction-header p {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color: #666;
+}
+
+/* Two Column Layout - Side by Side */
+.prediction-row {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.prediction-form-col {
+  flex: 1;
+  min-width: 350px;
+}
+
+.prediction-result-col {
+  flex: 1;
+  min-width: 350px;
+}
+
+/* Form Card */
+.form-card {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  height: 100%;
+}
+
+.form-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #012060;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #E1EBF7;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-label {
+  display: block;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
-@media (max-width: 600px) {
-  .prediction-container {
-    padding: 10px;
+.form-input:focus {
+  outline: none;
+  border-color: #012060;
+  box-shadow: 0 0 0 2px rgba(1, 32, 96, 0.1);
+}
+
+.form-select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #012060;
+}
+
+/* Two Column Form Layout for inputs */
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.predict-button {
+  width: 100%;
+  padding: 14px;
+  background: #012060;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 16px;
+}
+
+.predict-button:hover {
+  background: #0a3a8a;
+  transform: translateY(-1px);
+}
+
+.predict-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Result Card */
+.result-card {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  height: 100%;
+  min-height: 500px;
+}
+
+.result-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #012060;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #E1EBF7;
+}
+
+.result-placeholder {
+  text-align: center;
+  padding: 80px 20px;
+  color: #999;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Risk Alert */
+.risk-alert {
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.risk-alert-high {
+  background: #ffebee;
+  border-left: 4px solid #d32f2f;
+}
+
+.risk-alert-medium {
+  background: #fff3e0;
+  border-left: 4px solid #ff9800;
+}
+
+.risk-alert-low {
+  background: #e8f5e9;
+  border-left: 4px solid #4caf50;
+}
+
+.risk-level {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.risk-probability {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.risk-message {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Chart Container - Fixed Overlapping Issue */
+.chart-container {
+  margin-top: 24px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.chart-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #012060;
+  margin-bottom: 16px;
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 320px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .prediction-row {
+    flex-direction: column;
+  }
+  
+  .prediction-form-col, .prediction-result-col {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .prediction-wrapper {
+    padding: 20px;
+  }
+  
+  .prediction-header h1 {
+    font-size: 28px;
+  }
+  
+  .form-card, .result-card {
+    padding: 20px;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  .risk-probability {
+    font-size: 28px;
+  }
+  
+  .chart-wrapper {
+    height: 280px;
   }
 }

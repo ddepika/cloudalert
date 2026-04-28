@@ -1,6 +1,5 @@
-﻿// frontend/src/pages/LoginPage.jsx
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+﻿import React, { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
@@ -11,25 +10,73 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showResend, setShowResend] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+
+    if (params.get('verified') === 'true') {
+      setSuccessMessage('Email verified successfully. You can now login.');
+      // Clear URL params
+      navigate('/login', { replace: true });
+    }
+
+    if (params.get('error') === 'invalid_token') {
+      setError('Invalid verification link. Please request a new one.');
+      navigate('/login', { replace: true });
+    }
+
+    if (params.get('error') === 'token_expired') {
+      setError('Verification link expired. Please request a new one.');
+      navigate('/login', { replace: true });
+    }
+  }, [location, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+    setSuccessMessage('');
+    setShowResend(false);
+
     try {
       const response = await axios.post(`${API_BASE}/api/auth/login`, { email, password });
-      
-      if (response.data.success) {
+
+      if (response.data.success && response.data.verified) {
+        login(email, response.data.name);
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userName', response.data.name);
-        login(email, response.data.name);
         navigate('/');
+      } else if (!response.data.verified) {
+        setError(response.data.message);
+        setShowResend(true);
+        setPendingEmail(email);
       }
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid email or password');
+    }
+    setLoading(false);
+  };
+
+  const handleResendVerification = async () => {
+    const emailToResend = pendingEmail || email;
+    if (!emailToResend) {
+      setError('Please enter your email address first');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await axios.post(`${API_BASE}/api/auth/resend-verification?email=${emailToResend}`);
+      setSuccessMessage('Verification email resent. Please check your inbox.');
+      setShowResend(false);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Failed to resend verification email');
     }
     setLoading(false);
   };
@@ -46,6 +93,12 @@ const LoginPage = () => {
           </div>
         )}
 
+        {successMessage && (
+          <div style={{ backgroundColor: '#e8f5e9', color: '#2e7d32', padding: 12, borderRadius: 8, marginBottom: 16 }}>
+            {successMessage}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 16 }}>
             <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', color: '#333' }}>Email Address</label>
@@ -57,7 +110,7 @@ const LoginPage = () => {
               style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ccc', fontSize: 16 }}
             />
           </div>
-          
+
           <div style={{ marginBottom: 24 }}>
             <label style={{ display: 'block', marginBottom: 8, fontWeight: 'bold', color: '#333' }}>Password</label>
             <input
@@ -68,7 +121,7 @@ const LoginPage = () => {
               style={{ width: '100%', padding: 12, borderRadius: 8, border: '1px solid #ccc', fontSize: 16 }}
             />
           </div>
-          
+
           <button
             type="submit"
             disabled={loading}
@@ -77,7 +130,18 @@ const LoginPage = () => {
             {loading ? 'Signing in...' : 'Login'}
           </button>
         </form>
-        
+
+        {showResend && (
+          <div style={{ marginTop: 16, textAlign: 'center' }}>
+            <button
+              onClick={handleResendVerification}
+              style={{ color: '#012060', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              Resend Verification Email
+            </button>
+          </div>
+        )}
+
         <p style={{ textAlign: 'center', marginTop: 24, color: '#666' }}>
           Don't have an account? <Link to="/signup" style={{ color: '#012060', textDecoration: 'none' }}>Sign Up</Link>
         </p>

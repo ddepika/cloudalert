@@ -1,4 +1,3 @@
-// frontend/src/context/AuthContext.jsx
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
@@ -19,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     const userEmail = localStorage.getItem('userEmail');
     const userName = localStorage.getItem('userName');
+    const token = localStorage.getItem('authToken');
     
     if (userEmail && userName) {
       try {
@@ -37,11 +37,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('userName', name);
     setUser({ email, name, verified: false });
     setIsVerified(false);
+    // Check verification status
+    checkAuth();
   };
 
   const logout = () => {
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
+    localStorage.removeItem('authToken');
     setUser(null);
     setIsVerified(false);
   };

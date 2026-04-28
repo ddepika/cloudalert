@@ -1,7 +1,5 @@
-﻿// frontend/src/pages/SignupPage.jsx
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
 const API_BASE = 'http://localhost:8000';
@@ -13,7 +11,6 @@ const SignupPage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,17 +27,10 @@ const SignupPage = () => {
       });
       
       if (response.data.success) {
-        // Auto-login after signup
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userName', name);
-        login(email, name);
-        
         setMessage(response.data.message);
-        
-        // Redirect to home after 2 seconds
-        setTimeout(() => navigate('/'), 2000);
+        setTimeout(() => navigate('/login'), 4000);
       } else {
-        setError(response.data.message);
+        setMessage(response.data.message);
       }
     } catch (err) {
       setError(err.response?.data?.detail || 'Registration failed');
@@ -55,7 +45,7 @@ const SignupPage = () => {
         <p style={{ color: '#666', textAlign: 'center', marginBottom: 24 }}>Join CloudAlert for personalized alerts</p>
 
         {message && (
-          <div style={{ backgroundColor: '#e8f5e9', color: '#2e7d32', padding: 12, borderRadius: 8, marginBottom: 16 }}>
+          <div style={{ backgroundColor: '#e8f5e9', color: '#012060', padding: 12, borderRadius: 8, marginBottom: 16 }}>
             {message}
           </div>
         )}

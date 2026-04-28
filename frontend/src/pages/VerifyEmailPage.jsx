@@ -64,7 +64,7 @@ const handleResendVerification = async () => {
   return (
     <div style={{ maxWidth: 500, margin: '0 auto', padding: 20 }}>
       <div style={{ backgroundColor: 'white', borderRadius: 16, padding: 32, boxShadow: '0 2px 10px rgba(0,0,0,0.1)', textAlign: 'center' }}>
-        <div style={{ fontSize: 64, marginBottom: 16 }}>📧</div>
+        <div style={{ fontSize: 64, marginBottom: 16 }}> </div>
         <h2 style={{ color: '#012060', marginBottom: 16 }}>Verify Your Email</h2>
         <p style={{ color: '#666', marginBottom: 24 }}>
           We sent a verification link to <strong>{user?.email}</strong>. Please check your email and click the verification link to activate your account.

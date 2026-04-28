@@ -1,88 +1,132 @@
 ﻿import os
-import smtplib
-from email.message import EmailMessage
 from fastapi import BackgroundTasks
+from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 from pydantic import EmailStr
-from dotenv import load_dotenv
 
-# Force reload .env
-load_dotenv(override=True)
-
-MAIL_USERNAME = os.getenv("MAIL_USERNAME", "")
-MAIL_PASSWORD = os.getenv("MAIL_PASSWORD", "")
-MAIL_FROM = os.getenv("MAIL_FROM", "noreply@cloudalert.com")
-
-# Force EMAIL_CONFIGURED to True since we know credentials exist
-EMAIL_CONFIGURED = True
-
-print("=" * 60)
-print("EMAIL SERVICE LOADED - REAL MODE")
-print(f"MAIL_USERNAME: {MAIL_USERNAME}")
-print(f"MAIL_PASSWORD length: {len(MAIL_PASSWORD) if MAIL_PASSWORD else 0}")
-print(f"EMAIL_CONFIGURED: {EMAIL_CONFIGURED}")
-print("=" * 60)
-
-def send_email_sync(to_email: str, subject: str, body: str):
-    print(f"[send_email_sync] Sending to: {to_email}")
-    
-    try:
-        msg = EmailMessage()
-        msg.set_content(body)
-        msg['Subject'] = subject
-        msg['From'] = MAIL_FROM
-        msg['To'] = to_email
-        
-        print(f"[SMTP] Connecting to Gmail...")
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.starttls()
-            print(f"[SMTP] Logging in as {MAIL_USERNAME}...")
-            server.login(MAIL_USERNAME, MAIL_PASSWORD)
-            print(f"[SMTP] Login successful!")
-            server.send_message(msg)
-            print(f"[SMTP] Message sent!")
-        
-        print(f"Email sent to {to_email}")
-        return True
-    except Exception as e:
-        print(f"Email error: {e}")
-        import traceback
-        traceback.print_exc()
-        return False
-
-async def send_alert_email(email: EmailStr, name: str, district: str, risk_level: str, probability: float, background_tasks: BackgroundTasks):
-    print(f"[send_alert_email] Called! Sending to {email}")
-    subject = f"CloudAlert: {risk_level} Risk Alert for {district}"
-    body = f"""
-CloudAlert Weather Alert
-
-Dear {name},
-
-Cloudburst risk detected in {district}.
-
-Risk Level: {risk_level}
-Probability: {probability}%
-
-Action: {"Immediate evacuation recommended" if risk_level == "HIGH" else "Monitor conditions closely" if risk_level == "MEDIUM" else "No immediate action needed"}
-
-View dashboard: http://localhost:3000
-
----
-This is an automated alert from CloudAlert.
-"""
-    send_email_sync(email, subject, body)
+# Email configuration
+conf = ConnectionConfig(
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME", ""),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD", ""),
+    MAIL_FROM=os.getenv("MAIL_FROM", "noreply@cloudalert.com"),
+    MAIL_PORT=int(os.getenv("MAIL_PORT", 587)),
+    MAIL_SERVER=os.getenv("MAIL_SERVER", "smtp.gmail.com"),
+    MAIL_STARTTLS=True,
+    MAIL_SSL_TLS=False,
+    USE_CREDENTIALS=True if os.getenv("MAIL_USERNAME") else False,
+    VALIDATE_CERTS=True
+)
 
 async def send_verification_email(email: EmailStr, name: str, token: str, background_tasks: BackgroundTasks):
-    print(f"[send_verification_email] Called! Sending to {email}")
     verification_url = f"http://localhost:8000/api/auth/verify/{token}"
-    subject = "Verify your CloudAlert Account"
-    body = f"""
-CloudAlert Email Verification
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; }}
+            .container {{ max-width: 600px; margin: auto; padding: 20px; }}
+            .header {{ background: #012060; color: white; padding: 20px; text-align: center; }}
+            .button {{ display: inline-block; padding: 12px 24px; background: #012060; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0; }}
+            .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>CloudAlert</h1>
+                <p>Cloudburst Prediction System</p>
+            </div>
+            <div class="content">
+                <h2>Hello {name}!</h2>
+                <p>Please click the button below to verify your email:</p>
+                <div style="text-align: center;">
+                    <a href="{verification_url}" class="button">Verify Email</a>
+                </div>
+                <p>This link is valid for 30 days.</p>
+            </div>
+            <div class="footer">
+                <p>CloudAlert - Cloudburst Prediction System</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    message = MessageSchema(
+        subject="Verify your CloudAlert Account",
+        recipients=[email],
+        body=html_content,
+        subtype="html"
+    )
+    
+    fm = FastMail(conf)
+    
+    if os.getenv("MAIL_USERNAME"):
+        background_tasks.add_task(fm.send_message, message)
+        print(f"Verification email sent to {email}")
+        return {"sent": True}
+    else:
+        print(f"\n{'='*60}")
+        print(f"EMAIL NOT CONFIGURED")
+        print(f"Verification link for {email}: {verification_url}")
+        print(f"{'='*60}\n")
+        return {"sent": False, "link": verification_url}
 
-Hello {name},
-
-This link expires in 24 hours.
-
----
-CloudAlert - Cloudburst Prediction System
-"""
-    send_email_sync(email, subject, body)
+async def send_alert_email(email: EmailStr, name: str, district: str, risk_level: str, probability: float, background_tasks: BackgroundTasks):
+    risk_color = "#d32f2f" if risk_level == "HIGH" else "#ff9800" if risk_level == "MEDIUM" else "#4caf50"
+    
+    action_message = "Immediate evacuation recommended" if risk_level == "HIGH" else "Monitor conditions closely"
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{ font-family: Arial, sans-serif; }}
+            .container {{ max-width: 600px; margin: auto; }}
+            .alert {{ background: {risk_color}; color: white; padding: 20px; text-align: center; }}
+            .content {{ padding: 20px; }}
+            .footer {{ text-align: center; padding: 20px; color: #666; font-size: 12px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="alert">
+                <h1>CloudAlert</h1>
+                <h2>{risk_level} RISK ALERT</h2>
+            </div>
+            <div class="content">
+                <h2>Dear {name},</h2>
+                <p>A potential cloudburst event has been detected in <strong>{district}</strong>.</p>
+                <p><strong>Risk Probability:</strong> {probability}%</p>
+                <p><strong>Risk Level:</strong> {risk_level}</p>
+                <p><strong>Suggested Action:</strong> {action_message}</p>
+                <p>Stay safe and follow local authorities.</p>
+            </div>
+            <div class="footer">
+                <p>This is an automated alert from CloudAlert System.</p>
+                <p>For more information, visit CloudAlert Dashboard.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    message = MessageSchema(
+        subject=f"CloudAlert: {risk_level} Risk Alert for {district}",
+        recipients=[email],
+        body=html_content,
+        subtype="html"
+    )
+    
+    fm = FastMail(conf)
+    
+    if os.getenv("MAIL_USERNAME"):
+        background_tasks.add_task(fm.send_message, message)
+        print(f"Alert email sent to {email}")
+    else:
+        print(f"\n{'='*60}")
+        print(f"EMAIL NOT CONFIGURED - Alert for {email}")
+        print(f"District: {district}, Risk: {risk_level} ({probability}%)")
+        print(f"{'='*60}\n")
